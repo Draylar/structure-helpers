@@ -83,12 +83,13 @@ public class RandomChanceProcessor extends StructureProcessor {
     }
 
     @Override
-    public Structure.StructureBlockInfo process(WorldView world, BlockPos pos, BlockPos pos2, Structure.StructureBlockInfo thing,
-                                                Structure.StructureBlockInfo info, StructurePlacementData data) {
+    public Structure.StructureBlockInfo process(WorldView world, BlockPos pos, Structure.StructureBlockInfo thing, Structure.StructureBlockInfo info, StructurePlacementData data) {
         Random rand = new Random(MathHelper.hashCode(info.pos));
+
         if (entries.containsKey(info.state)) {
             float totalWeight = 0f;
             float value = rand.nextFloat() * weightSum;
+
             for (Entry entry : entries.get(info.state)) {
                 totalWeight += entry.weight;
                 if (value < totalWeight) {
@@ -97,6 +98,7 @@ public class RandomChanceProcessor extends StructureProcessor {
                 }
             }
         }
+
         return info;
     }
 
@@ -106,7 +108,7 @@ public class RandomChanceProcessor extends StructureProcessor {
     }
 
     @Override
-    protected <T> Dynamic<T> rawToDynamic(DynamicOps<T> ops) {
+    protected <T> Dynamic<T> method_16666(DynamicOps<T> ops) {
         Stream<T> s = entries.entrySet().stream()
             .map(e -> ops.createMap(ImmutableMap.of(
                 ops.createString("Key"), BlockState.serialize(ops, e.getKey()).getValue(),

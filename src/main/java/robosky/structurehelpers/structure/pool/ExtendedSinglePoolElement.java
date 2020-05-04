@@ -1,12 +1,7 @@
 package robosky.structurehelpers.structure.pool;
 
 import com.google.common.collect.ImmutableList;
-
 import com.mojang.datafixers.Dynamic;
-
-import java.util.List;
-import java.util.Random;
-
 import net.minecraft.structure.Structure.StructureBlockInfo;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePlacementData;
@@ -22,9 +17,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-
 import robosky.structurehelpers.StructureHelpers;
 import robosky.structurehelpers.structure.LootDataUtil;
+
+import java.util.List;
+import java.util.Random;
 
 /**
  * Single pool element with capabilities of the rotation control and
@@ -56,27 +53,27 @@ public class ExtendedSinglePoolElement extends SinglePoolElement {
        return TYPE;
     }
 
-    // add/remove processors
     @Override
-    protected StructurePlacementData createPlacementData(BlockRotation rot, BlockBox bbox) {
-      StructurePlacementData data = super.createPlacementData(rot, bbox);
-      // allow air and structure blocks to work properly
-      data.removeProcessor(BlockIgnoreStructureProcessor.IGNORE_AIR_AND_STRUCTURE_BLOCKS);
-      return data;
+    protected StructurePlacementData method_16616(BlockRotation rot, BlockBox bbox) {
+        StructurePlacementData data = super.method_16616(rot, bbox);
+        // allow air and structure blocks to work properly
+        data.removeProcessor(BlockIgnoreStructureProcessor.IGNORE_AIR_AND_STRUCTURE_BLOCKS);
+        return data;
     }
 
     @Override
-    public boolean generate(StructureManager manager, IWorld world, ChunkGenerator<?> generator,
-            BlockPos pos, BlockPos pos2, BlockRotation rotation, BlockBox box, Random rand) {
-        boolean ret = super.generate(manager, world, generator, pos, pos2, rotation, box, rand);
+    public boolean generate(StructureManager manager, IWorld world, ChunkGenerator<?> generator, BlockPos pos, BlockRotation rotation, BlockBox box, Random rand) {
+        boolean ret = super.generate(manager, world, generator, pos, rotation, box, rand);
+
         // process loot data blocks
         if(ret) {
             List<StructureBlockInfo> ls = manager.getStructureOrBlank(this.location)
-                .getInfosForBlock(pos, createPlacementData(rotation, box), StructureHelpers.LOOT_DATA_BLOCK);
+                .method_16445(pos, method_16616(rotation, box), StructureHelpers.LOOT_DATA_BLOCK);
             for(StructureBlockInfo info : ls) {
                 LootDataUtil.handleLootData(world, info);
             }
         }
+
         return ret;
     }
 }

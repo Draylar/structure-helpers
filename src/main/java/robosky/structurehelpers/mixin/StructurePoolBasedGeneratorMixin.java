@@ -1,53 +1,36 @@
 package robosky.structurehelpers.mixin;
 
-import com.google.common.collect.ImmutableList;
-
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicReference;
-
 import net.minecraft.block.JigsawBlock;
+import net.minecraft.structure.PoolStructurePiece;
 import net.minecraft.structure.Structure.StructureBlockInfo;
+import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.structure.pool.EmptyPoolElement;
 import net.minecraft.structure.pool.StructurePoolBasedGenerator.PieceFactory;
-import net.minecraft.structure.StructureManager;
-import net.minecraft.structure.PoolStructurePiece;
 import net.minecraft.structure.pool.StructurePoolElement;
-import net.minecraft.util.BlockRotation;
+import net.minecraft.util.BooleanBiFunction;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-
 import org.apache.logging.log4j.LogManager;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Coerce;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
 import robosky.structurehelpers.iface.ElementRange;
 import robosky.structurehelpers.iface.JigsawAccessorData;
 import robosky.structurehelpers.structure.pool.ExtendedSinglePoolElement;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Modifies the structure pool element placement algorithm
@@ -247,7 +230,7 @@ public abstract class StructurePoolBasedGeneratorMixin {
         method = "generatePiece(Lnet/minecraft/structure/PoolStructurePiece;Ljava/util/concurrent/atomic/AtomicReference;II)V",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/util/shape/VoxelShapes;matchesAnywhere(Lnet/minecraft/util/shape/VoxelShape;Lnet/minecraft/util/shape/VoxelShape;Lnet/minecraft/util/function/BooleanBiFunction;)Z",
+            target = "Lnet/minecraft/util/shape/VoxelShapes;matchesAnywhere(Lnet/minecraft/util/shape/VoxelShape;Lnet/minecraft/util/shape/VoxelShape;Lnet/minecraft/util/BooleanBiFunction;)Z",
             ordinal = 0
         )
     )

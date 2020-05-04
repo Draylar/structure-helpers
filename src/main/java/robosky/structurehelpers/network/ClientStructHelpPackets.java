@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
 import robosky.structurehelpers.StructureHelpers;

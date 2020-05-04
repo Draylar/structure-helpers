@@ -1,17 +1,14 @@
 package robosky.structurehelpers.mixin;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.JigsawBlockEntity;
 import net.minecraft.nbt.CompoundTag;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
 import robosky.structurehelpers.iface.JigsawAccessorData;
 
 @Mixin(JigsawBlockEntity.class)
@@ -46,7 +43,7 @@ public abstract class JigsawBlockEntityMixin extends BlockEntity implements Jigs
     }
 
     @Inject(method = "fromTag", at = @At("RETURN"))
-    private void readOffsetFromTag(BlockState state, CompoundTag tag, CallbackInfo info) {
+    private void readOffsetFromTag(CompoundTag tag, CallbackInfo info) {
         childJunction = tag.getBoolean(CHILD_JUNCTION);
     }
 }

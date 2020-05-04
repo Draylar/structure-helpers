@@ -60,8 +60,8 @@ public class LootDataBlockEntity extends BlockEntity implements BlockEntityClien
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
+    public void fromTag(CompoundTag tag) {
+        super.fromTag(tag);
         fromClientTag(tag);
     }
 }
