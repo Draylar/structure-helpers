@@ -149,11 +149,7 @@ public abstract class StructurePoolBasedGeneratorMixin implements StructurePoolG
      * Increment the current extended pool element placement count.
      */
     @ModifyArg(
-        method = {
-            "generatePiece(Lnet/minecraft/structure/PoolStructurePiece;Ljava/util/concurrent/atomic/AtomicReference;IIZ)V",
-            "<init>"
-            // move to enclosing class mixin
-        },
+        method = "generatePiece(Lnet/minecraft/structure/PoolStructurePiece;Ljava/util/concurrent/atomic/AtomicReference;IIZ)V",
         at = @At(
             value = "INVOKE",
             target = "Ljava/util/List;add(Ljava/lang/Object;)Z",
@@ -185,12 +181,14 @@ public abstract class StructurePoolBasedGeneratorMixin implements StructurePoolG
             ordinal = 0
         )
     )
-    private boolean filterAppropriateJunctionType(StructureBlockInfo a, StructureBlockInfo b) {
-        boolean child = a.tag.getBoolean(JigsawAccessorData.CHILD_JUNCTION);
-        boolean connectingChild = b.tag.getBoolean(JigsawAccessorData.CHILD_JUNCTION);
-        if(!connectingChild && (generatingChildren == child)) {
-            return JigsawBlock.attachmentMatches(a, b);
+    private boolean filterAppropriateJunctionType(StructureBlockInfo from, StructureBlockInfo to) {
+        boolean isFromChild = from.tag.getBoolean(JigsawAccessorData.CHILD_JUNCTION);
+        boolean isToChild = to.tag.getBoolean(JigsawAccessorData.CHILD_JUNCTION);
+
+        if(!isToChild && (generatingChildren == isFromChild)) {
+            return JigsawBlock.attachmentMatches(from, to);
         }
+
         return false;
     }
 
