@@ -24,7 +24,7 @@ public final class LootDataUtil {
     }
 
     public static void handleLootData(WorldAccess world, StructureBlockInfo bi) {
-        if(bi.tag != null) {
+        if(bi.nbt != null) {
             BlockEntity be = world.getBlockEntity(bi.pos.down());
             if(be instanceof LootableContainerBlockEntity) {
                 LootableContainerBlockEntity lc = (LootableContainerBlockEntity)be;
@@ -34,12 +34,12 @@ public final class LootDataUtil {
                 // and the packets both ways. If the loot table isn't a valid
                 // Identifier by this point, God help us.
                 try {
-                    lootTable = new Identifier(bi.tag.getString("LootTable"));
+                    lootTable = new Identifier(bi.nbt.getString("LootTable"));
                 } catch(InvalidIdentifierException e) {
                     lootTable = new Identifier("minecraft:empty");
                 }
                 try {
-                    String replacement = bi.tag.getString("Replacement");
+                    String replacement = bi.nbt.getString("Replacement");
                     blockState = blockStateParser.parse(new StringReader(replacement)).getBlockState();
                 } catch(CommandSyntaxException e) {
                     blockState = Blocks.AIR.getDefaultState();

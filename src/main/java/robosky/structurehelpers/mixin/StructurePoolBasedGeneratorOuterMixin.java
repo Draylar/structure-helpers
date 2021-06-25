@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import net.minecraft.structure.StructurePiecesHolder;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.apache.logging.log4j.LogManager;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import robosky.structurehelpers.iface.StructurePoolGeneratorAddition;
 import robosky.structurehelpers.structure.pool.ElementRange;
 import robosky.structurehelpers.structure.pool.ExtendedStructurePoolFeatureConfig;
@@ -59,7 +61,7 @@ abstract class StructurePoolBasedGeneratorOuterMixin {
         ChunkGenerator generator,
         StructureManager manager,
         BlockPos pos,
-        List<? super PoolStructurePiece> children,
+        StructurePiecesHolder holder,
         Random rand,
         boolean b,
         boolean generateAtSurface,
@@ -100,7 +102,7 @@ abstract class StructurePoolBasedGeneratorOuterMixin {
      * Generate child elements. Child element generation does not necessarily
      * respect total structure piece count nor placement limits.
      */
-    @Inject(method = "method_30419", at = @At("RETURN"))
+    @Inject(method = "method_30419", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
     private static void generateChildren(
         DynamicRegistryManager registryManager,
         StructurePoolFeatureConfig config,
@@ -108,12 +110,13 @@ abstract class StructurePoolBasedGeneratorOuterMixin {
         ChunkGenerator generator,
         StructureManager manager,
         BlockPos pos,
-        List<? super PoolStructurePiece> children,
+        StructurePiecesHolder holder,
         Random rand,
         boolean b,
         boolean generateAtSurface,
         HeightLimitView view,
-        CallbackInfo info
+        CallbackInfo info,
+        List<? super PoolStructurePiece> children
     ) {
         StructurePoolGeneratorAddition gen = poolGenerator.get();
         if(gen != null) {
@@ -123,8 +126,8 @@ abstract class StructurePoolBasedGeneratorOuterMixin {
                 if(piece instanceof PoolStructurePiece) {
                     PoolStructurePiece poolPiece = (PoolStructurePiece)piece;
                     BlockBox blockBox = poolPiece.getBoundingBox();
-                    int x = (blockBox.maxX + blockBox.minX) / 2;
-                    int z = (blockBox.maxZ + blockBox.minZ) / 2;
+                    int x = (blockBox.getMaxX() + blockBox.getMinX()) / 2;
+                    int z = (blockBox.getMaxX() + blockBox.getMinZ()) / 2;
                     int y = generator.getHeightOnGround(x, z, Heightmap.Type.WORLD_SURFACE_WG, view);
                     ((StructurePoolGeneratorAccessor)gen).callGeneratePiece(poolPiece,
                         new MutableObject<>(VoxelShapes.empty()),
@@ -145,7 +148,7 @@ abstract class StructurePoolBasedGeneratorOuterMixin {
         method = "method_30419",
         at = @At(
             value = "NEW",
-            target = "(DDDDDD)Lnet/minecraft/util/math/Box;"
+            target = "net/minecraft/util/math/Box"
         )
     )
     private static Box expandMaxStructureBounds(
@@ -161,7 +164,7 @@ abstract class StructurePoolBasedGeneratorOuterMixin {
         ChunkGenerator generator,
         StructureManager manager,
         BlockPos pos,
-        List<? super PoolStructurePiece> children,
+        StructurePiecesHolder holder,
         Random rand,
         boolean b,
         boolean generateAtSurface,
